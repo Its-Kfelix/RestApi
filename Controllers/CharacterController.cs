@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using Rpg3.Services;
 
 namespace Rpg3.Controllers;
 
@@ -7,24 +8,30 @@ namespace Rpg3.Controllers;
 [Route("api/[controller]")]
 public class CharacterController: ControllerBase
 {
-    private static List<Character> characters = new List<Character>()
+    //added a dependency injection to inject the characterservices
+    //interface to the charactercontroller
+    private readonly ICharacterServices _characterServices;
+
+    public CharacterController(ICharacterServices characterServices)
     {
-        new Character { Id = 0, Name = "David" },
-        new Character { Id = 1, Name = "Solomon" },
-        new Character { Id = 2, Name = "John" },
-        new Character { Id = 3, Name = "Ian" },
-        new Character { Id = 4, Name = "Alex" },
-        new Character { Id = 5, Name = "Joseph" }
-    };
+        _characterServices = characterServices;
+    }
+  
     [HttpGet("GetAll")]
     public ActionResult<List<Character>> Get()
     {
-        return Ok(characters);
+        return Ok(_characterServices.GetAllCharacters());
     }
     [HttpGet]
     public ActionResult<Character> GetSingleCharacter(int id)
     {
-        return Ok(characters.FirstOrDefault(c=> c.Id == id));
+        return Ok(_characterServices.GetCharacterById(id));
+    }
+
+    [HttpPost]
+    public ActionResult<List<Character>> AddCharacters(Character newCharacter)
+    {
+        return Ok(_characterServices.AddCharacter(newCharacter));
     }
 }
 
