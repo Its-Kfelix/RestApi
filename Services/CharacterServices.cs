@@ -11,19 +11,24 @@ public class CharacterServices:ICharacterServices
         new Character { Id = 4, Name = "Alex" },
         new Character { Id = 5, Name = "Joseph" }
     };
-    public List<Character> GetAllCharacters()
+    public async Task<ServiceResponse<List<Character>>> GetAllCharacters()
     {
-        return characters;
+        return new ServiceResponse<List<Character>>() { Data = characters };
     }
 
-    public Character GetCharacterById(int id)
+    public async Task<ServiceResponse<Character>> GetCharacterById(int id)
     {
-        return characters.FirstOrDefault(c=>c.Id == id);
+        var serviceResponse = new ServiceResponse<Character>();
+        var character = characters.FirstOrDefault(c => c.Id == id);
+        serviceResponse.Data = character;
+        return serviceResponse;
     }
 
-    public List<Character> AddCharacter(Character newCharacter)
+    public async Task<ServiceResponse<List<Character>>> AddCharacter(Character newCharacter)
     {
+        var serviceResponse = new ServiceResponse<List<Character>>();
         characters.Add(newCharacter);
-        return characters;
+        serviceResponse.Data = characters;
+        return serviceResponse;
     }
 }
